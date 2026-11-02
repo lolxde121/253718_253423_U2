@@ -2,6 +2,7 @@ import modelo.Asignatura;
 import modelo.Docente;
 import modelo.Estatus;
 import modelo.Solicitud;
+import modelo.Tutor;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -13,11 +14,13 @@ public class PlataformaCargas {
     private Solicitud solicitud;
     private ArrayList<Asignatura> asignaturas;
     private Asignatura asignatura;
+    private Tutor tutor;
     private Scanner scanner = new Scanner(System.in);
 
     PlataformaCargas(){
-        this.solicitudes = new ArrayDeque<>();  
+        this.solicitudes = new ArrayDeque<>();
         this.asignaturas = new ArrayList<>();
+        this.tutor = new Tutor();
         precargarAsignaturas();
     }
 
@@ -36,34 +39,47 @@ public class PlataformaCargas {
         return scanner;
     }
 
-    void gestionarSolictud(){
-        int opcion = 0;
+    void gestionarSolicitud() {
         if (solicitudes.isEmpty()) {
             System.out.println("No hay solicitudes pendientes por gestionar");
             return;
         }
+
         mostrarSolicitudes();
-        System.out.println(" ");
-        System.out.println("Solicitud Prioritaria Actualmente!!");
         solicitud = solicitudes.getFirst();
-        System.out.println("SLT-Prioritaria" + " " + solicitud.getEstatus() + " " + "Fecha" + " " + solicitud.getFechaSolicitud());
-        System.out.println("Aceptar 1 | Rechazar 0");
-        opcion = scanner.nextInt();
-        if (opcion  == 0){
-            solicitud.setEstatus(Estatus.RECHAZADA);
-            System.out.println("Solicitud Gestational Exitosamente");
-            solicitudes.removeFirst();
-        } else if (opcion ==1) {
-            solicitud.setEstatus(Estatus.ACEPTADA);
-            System.out.println("Solicitud Gestionada Exitosamente");
-            solicitudes.removeFirst();
-        } else {
-            System.out.println("Opcion no valida");
+        System.out.println("Solicitud mas antigua:");
+        System.out.println("Asignatura: " + solicitud.getAsignatura().getNombre());
+        System.out.println("Estatus: " + solicitud.getEstatus());
+        System.out.println("Fecha: " + solicitud.getFechaSolicitud());
+        System.out.println("1. Aceptar | 2. Procesar | 3. Rechazar");
+
+        if (!scanner.hasNextInt()) {
+            System.out.println("Debes ingresar una opcion numerica del 1 al 3");
+            scanner.nextLine();
+            return;
         }
 
+        int opcion = scanner.nextInt();
+        if (opcion < 1 || opcion > 3) {
+            System.out.println("Opcion no valida");
+            return;
+        }
+
+        if (opcion == 1) {
+            tutor.modificarEstatus(solicitud, Estatus.ACEPTADA);
+            solicitudes.removeFirst();
+            System.out.println("Solicitud aceptada");
+        } else if (opcion == 2) {
+            tutor.modificarEstatus(solicitud, Estatus.PROCESADA);
+            System.out.println("Solicitud procesada; permanece en la cola");
+        } else {
+            tutor.modificarEstatus(solicitud, Estatus.RECHAZADA);
+            solicitudes.removeFirst();
+            System.out.println("Solicitud rechazada");
+        }
     }
 
-    void solicitarCarga(){
+    void solicitarCarga() {
         mostrarAsignaturas();
         System.out.println("Selecciona La asignatura Para Solicitar Carga manual");
         if (!scanner.hasNextInt()) {
@@ -78,23 +94,25 @@ public class PlataformaCargas {
         }
         asignatura = asignaturas.get(seleccion - 1);
         solicitud = new Solicitud(asignatura);
-        solicitudes.addFirst(solicitud);
+        solicitudes.addLast(solicitud);
         System.out.println("Tu Solicitud ha Sido Enviada");
     }
 
-    void mostrarAsignaturas(){
+    void mostrarAsignaturas() {
         int index = 0;
-        for(Asignatura a: this.asignaturas){
+        for (Asignatura a : this.asignaturas) {
             index++;
             System.out.println(index + ". " + a.getNombre() + " - " + a.getDocente().getNombre());
         }
     }
 
-    void mostrarSolicitudes(){
+    void mostrarSolicitudes() {
         int index = 0;
-        for(Solicitud s: this.solicitudes){
+        for (Solicitud s : this.solicitudes) {
             index++;
-            System.out.println(index + ". " + "SLT" + index + " - " + s.getEstatus()+ " " + "Fecha" + " " + s.getFechaSolicitud());
+            System.out.println(index + ". " + s.getAsignatura().getNombre()
+                    + " - " + s.getEstatus()
+                    + " - Fecha " + s.getFechaSolicitud());
         }
     }
 }

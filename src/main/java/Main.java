@@ -14,6 +14,11 @@ public class Main {
             System.out.println("3. Gestionar Solicitud");
             System.out.println("4. Salir");
             System.out.println("Selecciona una opcion: ");
+            if (!scanner.hasNextInt()) {
+                System.out.println("Debes ingresar un numero valido");
+                scanner.nextLine();
+                continue;
+            }
             opcion = scanner.nextInt();
 
             switch (opcion) {
@@ -24,7 +29,7 @@ public class Main {
                     objPla.solicitarCarga();
                     break;
                 case 3:
-                    objPla.gestionarSolictud();
+                    objPla.gestionarSolicitud();
                     break;
                 case 4:
                     System.out.println("Saliendo...");

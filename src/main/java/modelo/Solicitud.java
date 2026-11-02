@@ -15,7 +15,7 @@ public class Solicitud {
     public Solicitud(Asignatura asignatura) {
         this.asignatura = asignatura;
         this.fechaSolicitud = LocalDateTime.now();
-        this.estatus = Estatus.PROCESADA;
+        this.estatus = Estatus.PENDIENTE;
     }
 
     public Solicitud(Asignatura asignatura, LocalDateTime fechaSolicitud, Estatus estatus) {
