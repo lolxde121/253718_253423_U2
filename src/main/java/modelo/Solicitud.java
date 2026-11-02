@@ -9,13 +9,13 @@ public class Solicitud {
 
     public Solicitud() {
         this.fechaSolicitud = LocalDateTime.now();
-        this.estatus = Estatus.PENDIENTE;
+        this.estatus = Estatus.PROCESADA;
     }
 
     public Solicitud(Asignatura asignatura) {
         this.asignatura = asignatura;
         this.fechaSolicitud = LocalDateTime.now();
-        this.estatus = Estatus.PENDIENTE;
+        this.estatus = Estatus.PROCESADA;
     }
 
     public Solicitud(Asignatura asignatura, LocalDateTime fechaSolicitud, Estatus estatus) {
